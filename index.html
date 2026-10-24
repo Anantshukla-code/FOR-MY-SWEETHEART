@@ -77,6 +77,8 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.25);
       cursor: pointer;
       transition: transform 0.3s ease, opacity 0.5s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .envelope-wrapper:hover {
@@ -95,6 +97,7 @@
       transform-origin: top;
       transition: transform 0.6s ease-in-out;
       z-index: 4;
+      pointer-events: none;
     }
 
     .envelope-wrapper .pocket {
@@ -108,6 +111,7 @@
       border-bottom: 110px solid #ec407a;
       border-radius: 0 0 10px 10px;
       z-index: 3;
+      pointer-events: none;
     }
 
     .envelope-wrapper .wax-seal {
@@ -127,6 +131,7 @@
       font-size: 24px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       transition: transform 0.3s;
+      pointer-events: none;
     }
 
     .envelope-wrapper:hover .wax-seal {
@@ -143,6 +148,7 @@
       font-size: 15px;
       letter-spacing: 1px;
       animation: pulse 1.5s infinite;
+      pointer-events: none;
     }
 
     @keyframes pulse {
@@ -164,7 +170,7 @@
       opacity: 0;
       pointer-events: none;
       transform: scale(0.8);
-      display: none;
+      display: none !important;
     }
 
     /* LETTER CARD STYLES */
@@ -186,7 +192,7 @@
     }
 
     .letter-card.show {
-      display: block;
+      display: block !important;
       opacity: 1;
       transform: translateY(0);
     }
@@ -200,14 +206,14 @@
 
     .letter-content {
       font-family: 'Dancing Script', cursive;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       color: #424242;
       line-height: 1.8;
       text-align: left;
       margin-bottom: 30px;
       white-space: pre-line;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 20px;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 22px;
       border-radius: 12px;
       border-left: 4px solid #e91e63;
     }
@@ -321,7 +327,7 @@
 
   <div class="main-wrapper">
     <!-- ENVELOPE -->
-    <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+    <div class="envelope-wrapper" id="envelope">
       <div class="flap"></div>
       <div class="pocket"></div>
       <div class="wax-seal">❤️</div>
@@ -332,30 +338,26 @@
     <div class="letter-card" id="letterCard">
       <h1>My Dearest Maharani,</h1>
       
-      <div class="letter-content" id="letterText">
-You know what my pretty , we today Completed 231 days from 8th of March when I lost myself in you at Roastery Cafe cum
-        my destination towards you or I may quote it as My First step towards MY PALACE of togetherness. even after these many days
-        I can't forget your very smell Esha., the spark in your eyes ,the hug you offered me was my trophy!
-       I'm blessed to be with you in.
-I loved you from that very moment till today in my heart, just so you know it is getting more and more high by each passing day.
-At present I don't want to delay it further , don't want to keep it in me don't want to just say I miss you or any other
-        phrase except one which I have engraved in my veins.So just clarify me , would you be mine for this birth ? 
-        or the upcoming ones later.
-if It's a YES from your side do let me know your acceptance of my small date I would love you be with you in TOM or soon!
-        I Truly want you , I can't share you , I Need you just on me & I want to kiss you, taste all of you , lift you up, 
-        hold your hands and take a walk on beach.
+      <div class="letter-content" id="letterText">You know what my pretty, today we completed 231 days from 8th of March when I lost myself in you at Roastery Cafe cum my destination towards you, or I may quote it as My First step towards MY PALACE of togetherness.
+
+Even after these many days I can't forget your very smell Esha, the spark in your eyes, the hug you offered me was my trophy! I'm blessed to be with you.
+
+I loved you from that very moment till today in my heart, just so you know it is getting more and more intense by each passing day.
+
+At present I don't want to delay it further, don't want to keep it in me, don't want to just say I miss you or any other phrase except one which I have engraved in my veins. So just clarify me, would you be mine for this birth or the upcoming ones later?
+
+If it's a YES from your side do let me know your acceptance of my small date, I would love to be with you tomorrow or soon!
+
+I Truly want you, I can't share you, I Need you just on me & I want to kiss you, taste all of you, lift you up, hold your hands and take a walk on beach.
 
 (Sakshi Singh Rawal, man)
-Anant Shukla
-
- ❤️
-      </div>
+Anant Shukla ❤️</div>
 
       <div class="question-title">Will you make me your man and accept this date? ✨</div>
 
       <div class="button-group">
-        <button class="btn btn-yes" onclick="handleYes()">YES! 💖</button>
-        <button class="btn btn-no" id="noBtn" onmouseover="dodgeNo()" onclick="dodgeNo()">NO 😜</button>
+        <button class="btn btn-yes" id="yesBtn">YES! 💖</button>
+        <button class="btn btn-no" id="noBtn">NO 😜</button>
       </div>
     </div>
   </div>
@@ -385,5 +387,82 @@ Anant Shukla
       bgHearts.appendChild(heart);
     }
 
-    // Open Envelope
+    // Open Envelope Functionality
+    const envelope = document.getElementById('envelope');
+    const letterCard = document.getElementById('letterCard');
+    let isOpen = false;
+
     function openEnvelope() {
+      if (isOpen) return;
+      isOpen = true;
+      
+      envelope.classList.add('open');
+      
+      setTimeout(() => {
+        envelope.classList.add('hide');
+        letterCard.classList.add('show');
+        triggerConfettiBurst();
+      }, 600);
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('touchstart', openEnvelope, {passive: true});
+
+    // Dodge NO button
+    const noBtn = document.getElementById('noBtn');
+    function dodgeNo() {
+      const x = (Math.random() - 0.5) * 200;
+      const y = (Math.random() - 0.5) * 150;
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    noBtn.addEventListener('mouseover', dodgeNo);
+    noBtn.addEventListener('touchstart', dodgeNo, {passive: true});
+    noBtn.addEventListener('click', dodgeNo);
+
+    // Handle YES click
+    const yesBtn = document.getElementById('yesBtn');
+    yesBtn.addEventListener('click', () => {
+      const modal = document.getElementById('celebrationModal');
+      modal.style.display = 'flex';
+      
+      // Heart Explosion Confetti
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+
+      (function frame() {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 7,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#e91e63', '#ff4081', '#ff80ab', '#ffffff']
+          });
+          confetti({
+            particleCount: 7,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#e91e63', '#ff4081', '#ff80ab', '#ffffff']
+          });
+        }
+
+        if (Date.now() < animationEnd) {
+          requestAnimationFrame(frame);
+        }
+      }());
+    });
+
+    function triggerConfettiBurst() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 40,
+          spread: 60,
+          origin: { y: 0.8 }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
